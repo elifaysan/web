@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Giriş</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+      }
+      .login-container {
+        max-width: 400px;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .login-container h2 {
+        margin-bottom: 20px;
+      }
+      .chart-container {
+        max-width: 600px;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: none; /* Grafik paneli başlangıçta gizli */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Giriş Yapma Bölümü -->
+    <div class="login-container">
+      <h2 class="text-center">Admin Giriş</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Kullanıcı Adı</label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            name="username"
+            placeholder="Kullanıcı Adı"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Şifre</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            placeholder="Şifre"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          Giriş Yap
+        </button>
+        <p class="text-danger mt-3 d-none" id="errorMsg">
+          Kullanıcı adı veya şifre hatalı!
+        </p>
+      </form>
+    </div>
+
+    <!-- Stok Durumu Bölümü -->
+    <div class="chart-container" id="stockPanel">
+      <h3 class="text-center">Ürün Stok Durumu</h3>
+      <canvas id="donutChart"></canvas>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      // Kullanıcı bilgileri (örnek)
+      const validUsername = "admin";
+      const validPassword = "12345";
+
+      // Giriş formu gönderimi
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Formun varsayılan gönderimini durdur
+
+          const username = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+
+          if (username === validUsername && password === validPassword) {
+            // Giriş başarılı
+            document.querySelector(".login-container").style.display = "none"; // Giriş formunu gizle
+            document.getElementById("stockPanel").style.display = "block"; // Stok durum panelini göster
+            loadChart(); // Grafiği yükle
+          } else {
+            // Hatalı giriş
+            document.getElementById("errorMsg").classList.remove("d-none");
+          }
+        });
+
+      // Donut Chart (Stok Durumu)
+      function loadChart() {
+        const ctx = document.getElementById("donutChart").getContext("2d");
+        const data = {
+          labels: [
+            "1 Numaralı İncir",
+            "2 Numaralı İncir",
+            "Çatlak İncir",
+            "Ceviz",
+            "Cevizli İncir",
+          ],
+          datasets: [
+            {
+              data: [25, 15, 10, 20, 30], // Her ürünün stok miktarı
+              backgroundColor: [
+                "#FF6384", // 1 Numaralı İncir
+                "#36A2EB", // 2 Numaralı İncir
+                "#FFCE56", // Çatlak İncir
+                "#4BC0C0", // Ceviz
+                "#9966FF", // Cevizli İncir
+              ],
+              hoverBackgroundColor: [
+                "#FF6384",
+                "#36A2EB",
+                "#FFCE56",
+                "#4BC0C0",
+                "#9966FF",
+              ],
+            },
+          ],
+        };
+
+        const options = {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "top",
+            },
+          },
+          cutout: "50%", // Donut şekli
+        };
+
+        new Chart(ctx, {
+          type: "doughnut",
+          data: data,
+          options: options,
+        });
+      }
+    </script>
+  </body>
+</html>
